@@ -2,7 +2,8 @@
   "type": "module",
   "scripts": {
     "start-w1d1": "tsx w1/d1/hello-llm.ts",
-    "start-w1d2": "tsx w1/d2/stateless-demo.ts"
+    "start-w1d2": "tsx w1/d2/stateless-demo.ts",
+    "start-w1d2-chat": "tsx w1/d2/chat-cli/main.ts"
   },
   "dependencies": {
     "dotenv": "^18.0.9",

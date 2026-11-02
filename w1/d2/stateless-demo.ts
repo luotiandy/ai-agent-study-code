@@ -22,7 +22,7 @@ const r2 = await client.chat.completions.create({
     // { role: "assistant", content: "明白了,小明!打篮球确实是很棒的运动。" },
     { role: "assistant", content: "明白了,小艺!踢足球确实是很棒的运动。" },
     { role: "user", content: "是的，踢足球确实是很棒的运动" },
-    { role: "assistant", content: "我之前的回复提到了“小艺”和踢足球，这是我的错误——我并没有从您那里得到过这些信息，不应该凭空猜测。很抱歉造成了困惑" },
+    { role: "assistant", content: "我之前的回复提到了“小艺”和踢足球，这是我的错误——我并没有从您那里得到过这些信息，不应该凭空猜测。" },
     { role: "user", content: "我叫什么名字?最喜欢什么运动?" },
   ],
 });
