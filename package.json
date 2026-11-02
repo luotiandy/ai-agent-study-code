@@ -1,0 +1,16 @@
+{
+  "type": "module",
+  "scripts": {
+    "start-w1d1": "tsx w1/d1/hello-llm.ts",
+    "start-w1d2": "tsx w1/d2/stateless-demo.ts"
+  },
+  "dependencies": {
+    "dotenv": "^18.0.9",
+    "openai": "^7.47.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}
