@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>采样矩阵实验 · 内容对比 / 正确性 / 相似度</title>
+<style>:root{
+  --bg:#f4f6f8; --card:#fff; --line:#e3e7eb; --ink:#18212b; --muted:#65707d;
+  --blue:#3554d1; --blue-s:#ebf0ff; --pass:#0f766e; --pass-s:#e6fbf7;
+  --t0:#0d9488; --t07:#d97706; --t15:#dc2626; --warn:#b45309; --warn-s:#fff4d9;
+}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.65 -apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}
+main{max-width:1500px;margin:0 auto;padding:36px 24px 72px}
+header h1{font-size:26px;letter-spacing:-.02em;margin:0}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.meta span{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px 12px;color:var(--muted);font-size:12.5px}
+.meta b{color:var(--ink)}
+section{margin-top:34px}
+h2{font-size:19px;margin:0 0 6px}
+h3{font-size:15px;margin:20px 0 10px}
+p.note{color:var(--muted);margin:0 0 14px;font-size:13px}
+.table-wrap{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:auto;box-shadow:0 1px 3px #0001}
+table{width:100%;border-collapse:collapse;min-width:980px}
+th,td{border-bottom:1px solid var(--line);padding:13px 15px;vertical-align:top;text-align:left}
+thead th{position:sticky;top:0;background:#f9fafb;font-size:12.5px;font-weight:650;white-space:nowrap;z-index:1}
+tbody th{width:74px;background:#f9fafb;color:var(--muted);font-size:12px;text-align:center;vertical-align:middle;white-space:nowrap}
+tbody tr:last-child th,tbody tr:last-child td{border-bottom:0}
+td+td,thead th+th{border-left:1px solid var(--line)}
+.temp-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.dot-0{background:var(--t0)} .dot-07{background:var(--t07)} .dot-15{background:var(--t15)}
+.answer{white-space:pre-wrap;color:#333a44;font-size:13.2px}
+.judge{display:inline-flex;align-items:center;gap:6px;margin:8px 0 6px;background:var(--pass-s);color:var(--pass);border-radius:999px;padding:2px 9px;font-size:11.5px;font-weight:650;white-space:nowrap}
+.judge small{font-weight:450}
+.judge-note{color:var(--muted);font-size:12px;margin:0}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;padding:3px 8px;border-radius:999px;border:1px solid var(--line);background:#f6f7f9;white-space:nowrap}
+.chip.d2{background:#fff3d6;border-color:#f5d08a;color:#92400e}
+.chip.d3{background:#ffe8cc;border-color:#fdba74;color:#9a3412}
+.chip.d6{background:#fee2e2;border-color:#fca5a5;color:#991b1b}
+.chip b{font-size:10px;margin-left:4px}
+.metric{display:inline-block;background:var(--blue-s);color:var(--blue);border-radius:6px;padding:2px 7px;font-size:12px;font-weight:650}
+.metric.high{background:#dcfce7;color:#166534}
+.metric.mid{background:#dbeafe;color:#1d4ed8}
+.metric.low{background:#fee2e2;color:#b91c1c}
+.compact td,.compact th{padding:10px 13px;font-size:13px}
+.compact tbody th{width:118px}
+.method{background:#f9fafb;border:1px dashed #cbd5e1;border-radius:10px;padding:12px 15px;color:#475569;font-size:12.5px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
+.kpi{font-size:26px;font-weight:700;line-height:1.1;margin-bottom:3px}
+.kpi-label{color:var(--muted);font-size:12px}
+@media (max-width:800px){.grid{grid-template-columns:1fr}}
+footer{color:var(--muted);font-size:12px;text-align:center;margin-top:38px}
+</style>
+</head>
+<body><main>
+<header>
+  <h1>采样矩阵实验对比</h1>
+  <div class="meta">
+    <span>数据源：<b>notes/sampling-matrix-result.md</b></span>
+    <span>模型：<b>glm-5.3-flash</b></span>
+    <span>每组：<b>3 次</b></span>
+    <span><b>max_tokens = 2000</b></span>
+    <span>温度：<b>0 / 0.7 / 1.5</b></span>
+  </div>
+</header>
+
+<section>
+  <h2>Factual · 内容与正确性</h2>
+  <p class="note">提问：解释 Node.js 的事件循环。判断口径：只标记结果中的技术事实是否错误；遗漏细节不算错误。</p>
+  <div class="table-wrap"><table><thead><tr><th style="width:74px">Run</th>
+<th><span class="temp-dot dot-0"></span>temperature = 0</th>
+<th><span class="temp-dot dot-07"></span>temperature = 0.7</th>
+<th><span class="temp-dot dot-15"></span>temperature = 1.5</th></tr></thead><tbody><tr><th>run 1</th><td><div class="judge">通过</div><p class="judge-note">技术表述准确；阶段列举未提 idle/prepare，但没有声称穷举。</p><div class="answer">Node.js 的事件循环是让单线程 JavaScript 实现非阻塞异步 I/O 的核心机制，它不断循环检查并执行已完成的异步操作回调。事件循环按固定顺序经历多个阶段（timers、pending callbacks、poll、check、close callbacks），每个阶段处理特定类型的回调，同时 microtask 队列（如 Promise 和 process.nextTick）会在阶段切换时优先执行。正是这一机制让 Node.js 能用少量线程高效处理大量并发连接，而不需要为每个请求创建新线程。</div></td><td><div class="judge">通过</div><p class="judge-note">表述简略但无误；未展开 microtask 细节。</p><div class="answer">Node.js 的事件循环是一种让单线程 JavaScript 实现非阻塞 I/O 的运行机制。它把耗时操作(如文件读写、网络请求)交给系统内核或 libuv 线程池处理，完成后将回调放入队列。事件循环按顺序遍历各阶段(timers、poll、check 等)，在调用栈空闲时依次执行这些回调，从而实现异步。</div></td><td><div class="judge">通过</div><p class="judge-note">核心机制和阶段表述正确；结束条件描述可接受。</p><div class="answer">Node.js 的事件循环是让单线程 JavaScript 实现非阻塞 I/O 的核心机制，通过不断循环来分发和执行异步回调。它由 timers、poll、check 等多个阶段组成，每个阶段处理特定类型的回调(如定时器、I/O 事件、`setImmediate` 等)。当 libuv 完成初始化并检测到没有待处理的任务时，事件循环结束，进程退出。</div></td></tr><tr><th>run 2</th><td><div class="judge">通过</div><p class="judge-note">准确；核心语义完整。</p><div class="answer">Node.js 的事件循环是 libuv 提供的一种机制，让单线程的 JavaScript 能够实现非阻塞 I/O。它不断循环遍历多个阶段(如 timers、poll、check 等)，依次执行对应的回调函数。耗时操作(如文件读写、网络请求)会被委托给系统内核或线程池，完成后其回调再由事件循环调度执行。</div></td><td><div class="judge">通过</div><p class="judge-note">准确；细节表述无事实错误。</p><div class="answer">事件循环是 Node.js 处理异步操作的机制，让单线程的 JavaScript 能实现非阻塞 I/O。它按顺序循环执行各阶段(timers、poll、check 等)，在对应阶段执行定时器回调、I/O 回调和 `setImmediate` 回调。耗时的 I/O 操作被委托给系统内核或 libuv 线程池，完成后其回调再经事件循环调度执行，从而不阻塞主线程。</div></td><td><div class="judge">通过</div><p class="judge-note">准确；细节表述无事实错误。</p><div class="answer">Node.js 的事件循环是 libuv 提供的核心机制，它让单线程的 JavaScript 能够以非阻塞方式处理 I/O 操作。它循环经过多个阶段(如 timers、poll、check),依次执行定时器回调、I/O 回调和 setImmediate 回调等任务。耗时操作交给底层线程池处理，完成后通过回调通知主线程，从而实现高并发。</div></td></tr><tr><th>run 3</th><td><div class="judge">通过</div><p class="judge-note">准确；描述了 libuv、阶段与委托执行。</p><div class="answer">Node.js 的事件循环是一个让单线程实现非阻塞 I/O 的核心机制，它不断循环检查并执行回调队列中的任务。它由 libuv 实现分为多个阶段（如 timers、poll、check 等），每个阶段处理特定类型的回调，如定时器、I/O 事件和 setImmediate。耗时操作（如文件读写、网络请求）被委托给线程池或操作系统内核，完成后其回调再回到事件循环中执行，从而保证主线程不被阻塞。</div></td><td><div class="judge">通过</div><p class="judge-note">准确；补充微任务时未引入错误。</p><div class="answer">Node.js 的事件循环是基于 libuv 的机制，负责调度和执行异步回调，让单线程的 JavaScript 实现非阻塞 I/O。它分为多个阶段（如 timers、poll、check 等），循环依次处理定时器回调、I/O 事件和 `setImmediate` 等任务。配合事件队列和微任务（如 Promise）的执行规则，事件循环构成了 Node.js 异步编程的核心基础。</div></td><td><div class="judge">通过</div><p class="judge-note">准确；表述简明且无误。</p><div class="answer">Node.js 的事件循环是让单线程实现非阻塞异步 I/O 的核心机制。它由 libuv 驱动，循环地按阶段(timers、poll、check 等)处理回调队列，耗时操作则交给底层线程池，完成后回调再回到队列执行。正因如此，Node.js 能用单个主线程高效处理大量并发请求。</div></td></tr></tbody></table></div>
+  <h3>逐次正确性判断</h3>
+  <div class="table-wrap"><table class="compact"><thead><tr><th>组别</th><th>正确性判断</th></tr></thead><tbody><tr><th>T=0 · run 1</th><td><span class="judge">通过</span><br><small>技术表述准确；阶段列举未提 idle/prepare，但没有声称穷举。</small></td></tr><tr><th>T=0 · run 2</th><td><span class="judge">通过</span><br><small>准确；核心语义完整。</small></td></tr><tr><th>T=0 · run 3</th><td><span class="judge">通过</span><br><small>准确；描述了 libuv、阶段与委托执行。</small></td></tr><tr><th>T=0.7 · run 1</th><td><span class="judge">通过</span><br><small>表述简略但无误；未展开 microtask 细节。</small></td></tr><tr><th>T=0.7 · run 2</th><td><span class="judge">通过</span><br><small>准确；细节表述无事实错误。</small></td></tr><tr><th>T=0.7 · run 3</th><td><span class="judge">通过</span><br><small>准确；补充微任务时未引入错误。</small></td></tr><tr><th>T=1.5 · run 1</th><td><span class="judge">通过</span><br><small>核心机制和阶段表述正确；结束条件描述可接受。</small></td></tr><tr><th>T=1.5 · run 2</th><td><span class="judge">通过</span><br><small>准确；细节表述无事实错误。</small></td></tr><tr><th>T=1.5 · run 3</th><td><span class="judge">通过</span><br><small>准确；表述简明且无误。</small></td></tr></tbody></table></div>
+</section>
+
+<section>
+  <h2>Creative · 内容与可用性判断</h2>
+  <p class="note">原始结果仅包含 Creative 名称列表，创意答案没有事实真值；这里只按“10 个非空、可读名称”做基础格式检查，颜色标记跨全部 90 个输出的重名。</p>
+  <div class="table-wrap"><table><thead><tr><th style="width:74px">Run</th>
+<th><span class="temp-dot dot-0"></span>temperature = 0</th>
+<th><span class="temp-dot dot-07"></span>temperature = 0.7</th>
+<th><span class="temp-dot dot-15"></span>temperature = 1.5</th></tr></thead><tbody><tr><th>run 1</th><td><div class="judge">格式通过</div><p class="judge-note">10 个非空名称，均为可用命令行待办工具命名形式。</p><div class="chips"><span class="chip d6">taskline<b>×6</b></span><span class="chip">shelldo</span><span class="chip d3">todosh<b>×3</b></span><span class="chip d2">tickterm<b>×2</b></span><span class="chip">listd</span><span class="chip">donow</span><span class="chip">cmdtodo</span><span class="chip d2">swiftask<b>×2</b></span><span class="chip d2">todox<b>×2</b></span><span class="chip">keepline</span></div></td><td><div class="judge">格式通过</div><p class="judge-note">10 个非空名称，均为可用命令行待办工具命名形式。</p><div class="chips"><span class="chip d6">taskline<b>×6</b></span><span class="chip d3">done.sh<b>×3</b></span><span class="chip">todoctl</span><span class="chip">markd</span><span class="chip d2">dodo<b>×2</b></span><span class="chip">strikethru</span><span class="chip d2">didit<b>×2</b></span><span class="chip d3">shellist<b>×3</b></span><span class="chip">crossout</span><span class="chip d2">Taskr<b>×2</b></span></div></td><td><div class="judge">格式通过</div><p class="judge-note">10 个非空名称，均为可用命令行待办工具命名形式。</p><div class="chips"><span class="chip d6">Taskline<b>×6</b></span><span class="chip d2">Todox<b>×2</b></span><span class="chip">Cliist</span><span class="chip">Donely</span><span class="chip">Taskshell</span><span class="chip d2">Tickterm<b>×2</b></span><span class="chip">Plndo</span><span class="chip d2">Swiftask<b>×2</b></span><span class="chip">Terminalist</span><span class="chip d2">Todo.sh<b>×2</b></span></div></td></tr><tr><th>run 2</th><td><div class="judge">格式通过</div><p class="judge-note">10 个非空名称，均为可用命令行待办工具命名形式。</p><div class="chips"><span class="chip d3">todone<b>×3</b></span><span class="chip d2">taskctl<b>×2</b></span><span class="chip d2">clido<b>×2</b></span><span class="chip d2">tickr<b>×2</b></span><span class="chip d3">shellist<b>×3</b></span><span class="chip d3">done.sh<b>×3</b></span><span class="chip">terminote</span><span class="chip">bashboard</span><span class="chip d6">taskline<b>×6</b></span><span class="chip">promptask</span></div></td><td><div class="judge">格式通过</div><p class="judge-note">10 个非空名称，均为可用命令行待办工具命名形式。</p><div class="chips"><span class="chip d3">todone<b>×3</b></span><span class="chip d3">tick<b>×3</b></span><span class="chip d2">clido<b>×2</b></span><span class="chip d6">taskline<b>×6</b></span><span class="chip d3">todosh<b>×3</b></span><span class="chip d2">due<b>×2</b></span><span class="chip d2">strike<b>×2</b></span><span class="chip">checkoff</span><span class="chip">doneline</span><span class="chip d2">didit<b>×2</b></span></div></td><td><div class="judge">格式通过</div><p class="judge-note">10 个非空名称，均为可用命令行待办工具命名形式。</p><div class="chips"><span class="chip d3">tick<b>×3</b></span><span class="chip d3">todosh<b>×3</b></span><span class="chip d6">taskline<b>×6</b></span><span class="chip">shodo</span><span class="chip d2">due<b>×2</b></span><span class="chip">sweep</span><span class="chip">pending</span><span class="chip d2">checkmate<b>×2</b></span><span class="chip">terse</span><span class="chip">monotask</span></div></td></tr><tr><th>run 3</th><td><div class="judge">格式通过</div><p class="judge-note">10 个非空名称，均为可用命令行待办工具命名形式。</p><div class="chips"><span class="chip d2">taskr<b>×2</b></span><span class="chip d2">dodo<b>×2</b></span><span class="chip">tada</span><span class="chip d3">done.sh<b>×3</b></span><span class="chip">tsk</span><span class="chip">listful</span><span class="chip">ticky</span><span class="chip d3">shellist<b>×3</b></span><span class="chip">markdone</span><span class="chip">cledo</span></div></td><td><div class="judge">格式通过</div><p class="judge-note">10 个非空名称；个别名称偏通用，但仍为可读单词。</p><div class="chips"><span class="chip d3">tick<b>×3</b></span><span class="chip">doit</span><span class="chip d2">strike<b>×2</b></span><span class="chip d2">checkmate<b>×2</b></span><span class="chip">prompt</span><span class="chip">tally</span><span class="chip">queue</span><span class="chip">finito</span><span class="chip">empty</span><span class="chip">clearline</span></div></td><td><div class="judge">格式通过</div><p class="judge-note">10 个非空名称，均为可用命令行待办工具命名形式。</p><div class="chips"><span class="chip d2">taskctl<b>×2</b></span><span class="chip d2">todo.sh<b>×2</b></span><span class="chip">todor</span><span class="chip">clitask</span><span class="chip">taskify</span><span class="chip">planq</span><span class="chip">dutrack</span><span class="chip d3">todone<b>×3</b></span><span class="chip d2">tickr<b>×2</b></span><span class="chip">worklist</span></div></td></tr></tbody></table></div>
+  <h3>逐次判断</h3>
+  <div class="table-wrap"><table class="compact"><thead><tr><th>组别</th><th>判断</th></tr></thead><tbody><tr><th>T=0 · run 1</th><td><span class="judge">格式通过</span><br><small>10 个非空名称，均为可用命令行待办工具命名形式。</small></td></tr><tr><th>T=0 · run 2</th><td><span class="judge">格式通过</span><br><small>10 个非空名称，均为可用命令行待办工具命名形式。</small></td></tr><tr><th>T=0 · run 3</th><td><span class="judge">格式通过</span><br><small>10 个非空名称，均为可用命令行待办工具命名形式。</small></td></tr><tr><th>T=0.7 · run 1</th><td><span class="judge">格式通过</span><br><small>10 个非空名称，均为可用命令行待办工具命名形式。</small></td></tr><tr><th>T=0.7 · run 2</th><td><span class="judge">格式通过</span><br><small>10 个非空名称，均为可用命令行待办工具命名形式。</small></td></tr><tr><th>T=0.7 · run 3</th><td><span class="judge">格式通过</span><br><small>10 个非空名称；个别名称偏通用，但仍为可读单词。</small></td></tr><tr><th>T=1.5 · run 1</th><td><span class="judge">格式通过</span><br><small>10 个非空名称，均为可用命令行待办工具命名形式。</small></td></tr><tr><th>T=1.5 · run 2</th><td><span class="judge">格式通过</span><br><small>10 个非空名称，均为可用命令行待办工具命名形式。</small></td></tr><tr><th>T=1.5 · run 3</th><td><span class="judge">格式通过</span><br><small>10 个非空名称，均为可用命令行待办工具命名形式。</small></td></tr></tbody></table></div>
+  <h3>跨组重名（大小写不敏感）</h3>
+  <div class="table-wrap"><table class="compact"><tbody><tr><th>重复名称</th><td><div class="chips"><span class="chip d6">taskline<b>×6</b></span><span class="chip d3">done.sh<b>×3</b></span><span class="chip d3">shellist<b>×3</b></span><span class="chip d3">tick<b>×3</b></span><span class="chip d3">todone<b>×3</b></span><span class="chip d3">todosh<b>×3</b></span><span class="chip d2">checkmate<b>×2</b></span><span class="chip d2">clido<b>×2</b></span><span class="chip d2">didit<b>×2</b></span><span class="chip d2">dodo<b>×2</b></span><span class="chip d2">due<b>×2</b></span><span class="chip d2">strike<b>×2</b></span><span class="chip d2">swiftask<b>×2</b></span><span class="chip d2">taskctl<b>×2</b></span><span class="chip d2">taskr<b>×2</b></span><span class="chip d2">tickr<b>×2</b></span><span class="chip d2">tickterm<b>×2</b></span><span class="chip d2">todo.sh<b>×2</b></span><span class="chip d2">todox<b>×2</b></span></div></td></tr></tbody></table></div>
+</section>
+
+<section>
+  <h2>组内三次结果相似度</h2>
+  <p class="note">同一温度下的 run 1 / run 2 / run 3 两两对照；数值仅用于观察趋势，不作为模型评分。</p>
+  <h3>Factual：字符 bigram Dice 相似度</h3>
+  <div class="grid"><div class="card"><div class="kpi">0.429</div><div class="kpi-label">T=0 平均相似度</div><hr style="border:0;border-top:1px solid var(--line);margin:10px 0"><div>run 1 ↔ run 2: <span class="metric mid">38.7%</span></div><div>run 1 ↔ run 3: <span class="metric mid">44.7%</span></div><div>run 2 ↔ run 3: <span class="metric mid">45.3%</span></div></div><div class="card"><div class="kpi">0.583</div><div class="kpi-label">T=0.7 平均相似度</div><hr style="border:0;border-top:1px solid var(--line);margin:10px 0"><div>run 1 ↔ run 2: <span class="metric high">60.8%</span></div><div>run 1 ↔ run 3: <span class="metric high">55.2%</span></div><div>run 2 ↔ run 3: <span class="metric high">58.9%</span></div></div><div class="card"><div class="kpi">0.458</div><div class="kpi-label">T=1.5 平均相似度</div><hr style="border:0;border-top:1px solid var(--line);margin:10px 0"><div>run 1 ↔ run 2: <span class="metric mid">47.7%</span></div><div>run 1 ↔ run 3: <span class="metric mid">50.4%</span></div><div>run 2 ↔ run 3: <span class="metric mid">39.3%</span></div></div></div>
+  <div class="table-wrap" style="margin-top:12px"><table class="compact"><thead><tr><th>温度</th><th>run 1 ↔ run 2</th><th>run 1 ↔ run 3</th><th>run 2 ↔ run 3</th><th>平均</th></tr></thead><tbody>
+    <tr><th>T=0</th><td><span class="metric mid">38.7%</span></td><td><span class="metric mid">44.7%</span></td><td><span class="metric mid">45.3%</span></td><td><b>0.429</b></td></tr><tr><th>T=0.7</th><td><span class="metric high">60.8%</span></td><td><span class="metric high">55.2%</span></td><td><span class="metric high">58.9%</span></td><td><b>0.583</b></td></tr><tr><th>T=1.5</th><td><span class="metric mid">47.7%</span></td><td><span class="metric mid">50.4%</span></td><td><span class="metric mid">39.3%</span></td><td><b>0.458</b></td></tr>
+  </tbody></table></div>
+  <h3>Creative：小写化后的精确集合 Jaccard</h3>
+  <div class="grid"><div class="card"><div class="kpi">0.118</div><div class="kpi-label">T=0 平均 Jaccard</div><hr style="border:0;border-top:1px solid var(--line);margin:10px 0"><div>run 1 ↔ run 2: <b>1</b> 个重名 · <span class="metric low">5.3%</span></div><div>run 1 ↔ run 3: <b>4</b> 个重名 · <span class="metric mid">25.0%</span></div><div>run 2 ↔ run 3: <b>1</b> 个重名 · <span class="metric low">5.3%</span></div></div><div class="card"><div class="kpi">0.160</div><div class="kpi-label">T=0.7 平均 Jaccard</div><hr style="border:0;border-top:1px solid var(--line);margin:10px 0"><div>run 1 ↔ run 2: <b>3</b> 个重名 · <span class="metric low">17.6%</span></div><div>run 1 ↔ run 3: <b>1</b> 个重名 · <span class="metric low">5.3%</span></div><div>run 2 ↔ run 3: <b>4</b> 个重名 · <span class="metric mid">25.0%</span></div></div><div class="card"><div class="kpi">0.000</div><div class="kpi-label">T=1.5 平均 Jaccard</div><hr style="border:0;border-top:1px solid var(--line);margin:10px 0"><div>run 1 ↔ run 2: <b>0</b> 个重名 · <span class="metric low">0.0%</span></div><div>run 1 ↔ run 3: <b>0</b> 个重名 · <span class="metric low">0.0%</span></div><div>run 2 ↔ run 3: <b>0</b> 个重名 · <span class="metric low">0.0%</span></div></div></div>
+  <div class="table-wrap" style="margin-top:12px"><table class="compact"><thead><tr><th>温度</th><th>run 1 ↔ run 2</th><th>run 1 ↔ run 3</th><th>run 2 ↔ run 3</th><th>平均</th></tr></thead><tbody>
+    <tr><th>T=0</th><td>1 / <span class="metric low">5.3%</span></td><td>4 / <span class="metric mid">25.0%</span></td><td>1 / <span class="metric low">5.3%</span></td><td><b>0.118</b></td></tr><tr><th>T=0.7</th><td>3 / <span class="metric low">17.6%</span></td><td>1 / <span class="metric low">5.3%</span></td><td>4 / <span class="metric mid">25.0%</span></td><td><b>0.160</b></td></tr><tr><th>T=1.5</th><td>0 / <span class="metric low">0.0%</span></td><td>0 / <span class="metric low">0.0%</span></td><td>0 / <span class="metric low">0.0%</span></td><td><b>0.000</b></td></tr>
+  </tbody></table></div>
+  <div class="method" style="margin-top:16px"><b>计算口径</b><br>· Factual：去除大小写、空白与标点后，取字符 2-gram 集合，计算 Dice 系数（2×交集 / 两集合大小之和）。<br>· Creative：每个 run 的 10 个名称视为集合，名称转小写后计算 Jaccard（交集 / 并集）；组内取 3 个两两结果的平均值。</div>
+</section>
+
+<footer>生成自 notes/sampling-matrix-result.md · 仅基于已捕获结果</footer>
+</main></body></html>

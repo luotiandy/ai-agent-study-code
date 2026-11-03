@@ -3,7 +3,11 @@
   "scripts": {
     "start-w1d1": "tsx w1/d1/hello-llm.ts",
     "start-w1d2": "tsx w1/d2/stateless-demo.ts",
-    "start-w1d2-chat": "tsx w1/d2/chat-cli/main.ts"
+    "start-w1d2-chat": "tsx w1/d2/chat-cli/main.ts",
+    "start-w1d3": "tsx w1/d3/sampling-matrix.ts",
+    "start-w1d4": "tsx w1/d4/stream-demo.ts",
+    "start-w1d4-sdk": "tsx w1/d4/stream-sdk.ts",
+    "start-w1d4-chat": "tsx w1/d4/chat-cli/main.ts"
   },
   "dependencies": {
     "dotenv": "^18.0.9",
