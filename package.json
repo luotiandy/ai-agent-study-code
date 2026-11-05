@@ -8,7 +8,10 @@
     "start-w1d4": "tsx w1/d4/stream-demo.ts",
     "start-w1d4-sdk": "tsx w1/d4/stream-sdk.ts",
     "start-w1d4-chat": "tsx w1/d4/chat-cli/main.ts",
-    "start-w1d5-chat": "tsx w1/d5/chat-cli/main.ts"
+    "start-w1d5-chat": "tsx w1/d5/chat-cli/main.ts",
+    "start-w1d6": "tsx w1/d6/extractor-ai.ts",
+    "start-w1d6-ai": "tsx w1/d6/extractor-ai.ts",
+    "start-w1d6-chat": "tsx w1/d6/chat-cli/main.ts"
   },
   "dependencies": {
     "dotenv": "^18.0.9",
