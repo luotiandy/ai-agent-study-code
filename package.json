@@ -13,7 +13,8 @@
     "start-w1d6-ai": "tsx w1/d6/extractor-ai.ts",
     "start-w1d6-chat": "tsx w1/d6/chat-cli/main.ts",
     "start-w1d7": "tsx w1/d7/w1-cli/main.ts",
-    "start-w2d1": "tsx w2/d1/p1-cli/main.ts"
+    "start-w2d1": "tsx w2/d1/p1-cli/main.ts",
+    "start-w2d2": "tsx w2/d2/stability.ts"
   },
   "dependencies": {
     "dotenv": "^18.0.9",
