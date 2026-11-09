@@ -8,6 +8,8 @@ import { costOf, type UsageStats } from "./pricing";
 export interface ChatHooks {
   onDelta?: (text: string) => void;
   onTool?: (name: string, args: unknown) => void;
+  /** 每一跳结束(工具执行前)回调:verbose 模式可视化用 */
+  onHop?: (info: { hop: number; messageCount: number; tools: string[] }) => void;
   signal?: AbortSignal;
 }
 
@@ -56,6 +58,7 @@ export class Session {
 
     const tools = toToolsParam();
     let remainingToolRounds = 10; // 工具轮数预算:防御无限循环
+    let hopCount = 0;            // 跳数计数:verbose 可视化用
     let interrupted = false;
 
     try {
@@ -146,6 +149,13 @@ export class Session {
           hooks.onDelta?.(answer);
           return { text: answer, interrupted: false };
         }
+
+        hopCount += 1;
+        hooks.onHop?.({
+          hop: hopCount,
+          messageCount: this.messages.length,
+          tools: calls.map((c) => c.function.name),
+        });
 
         // 执行同一 assistant 消息里的多条 tool_calls(过程可视化交给 onTool)
         for (const call of calls) {
