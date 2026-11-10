@@ -16,7 +16,9 @@
     "start-w2d1": "tsx w2/d1/p1-cli/main.ts",
     "start-w2d2": "tsx w2/d2/stability.ts",
     "start-w2d3-fixtures": "tsx w2/d3/make-fixtures.ts",
-    "start-w2d4": "tsx w2/d4/main.ts"
+    "start-w2d4": "tsx w2/d4/main.ts",
+    "start-w2d5": "tsx w2/d5/p1-cli/main.ts",
+    "start-w3d1": "tsx --test w3/d1/p1-cli/guardrails.test.ts"
   },
   "dependencies": {
     "dotenv": "^18.0.9",
