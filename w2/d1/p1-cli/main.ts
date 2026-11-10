@@ -21,7 +21,6 @@ function parseArgs(argv: string[]) {
     task: get("--task"),
     dir: get("--dir") ?? ".",
     out: get("--out") ?? "report.md",
-    verbose: argv.includes("--verbose"),
   };
 }
 
@@ -31,7 +30,6 @@ async function runNonInteractive(
   task: string,
   dir: string,
   out: string,
-  verbose: boolean,
 ): Promise<number> {
   const session = new Session(
     `${SYSTEM}\n当前工作目录是项目根,所有相对路径基于它。任务完成后把结果报告用 write_file 写入指定输出文件,再用一句话总结。`,
@@ -43,9 +41,6 @@ async function runNonInteractive(
   const { text } = await session.chat(fullTask, {
     onDelta: (t) => process.stdout.write(t),
     onTool: (name, args) => console.log(`\n  🔧 ${name}(${JSON.stringify(args)})`),
-    onHop: verbose
-      ? (info) => console.log(`\n  [hop ${info.hop}] messages=${info.messageCount} | 点名: ${info.tools.join(", ")}`)
-      : undefined,
   });
 
   printUsage(session.usage, p.model);
@@ -53,7 +48,7 @@ async function runNonInteractive(
 }
 
 /** 交互模式:与 W1-D7 相同 */
-async function interactive(client: OpenAI, verbose: boolean) {
+async function interactive(client: OpenAI) {
   const session = new Session(SYSTEM, client, p.model);
   const rl = readline.createInterface({ input, output });
   console.log("P1 交互模式 | /help 查看命令 | Shift+C 中断/退出");
@@ -84,9 +79,6 @@ async function interactive(client: OpenAI, verbose: boolean) {
       const { text, interrupted } = await session.chat(line, {
         onDelta: (t) => process.stdout.write(t),
         onTool: (name, args) => console.log(`\n  🔧 ${name}(${JSON.stringify(args)})`),
-        onHop: verbose
-          ? (info) => console.log(`\n  [hop ${info.hop}] messages=${info.messageCount} | 点名: ${info.tools.join(", ")}`)
-          : undefined,
         signal: controller.signal,
       });
       if (interrupted) console.log("\n⏹ 已中断(已生成内容已保留在上下文)");
@@ -101,14 +93,14 @@ async function interactive(client: OpenAI, verbose: boolean) {
 
 async function main() {
   const client = new OpenAI({ baseURL: p.baseURL, apiKey: p.key });
-  const { task, dir, out, verbose } = parseArgs(process.argv.slice(2));
+  const { task, dir, out } = parseArgs(process.argv.slice(2));
 
   if (task) {
     // 非交互:跑完退出,退出码 0/1 —— 可测试性是 D2 稳定性测试的前提
-    const code = await runNonInteractive(client, task, dir, out, verbose);
+    const code = await runNonInteractive(client, task, dir, out);
     process.exit(code);
   }
-  await interactive(client, verbose);
+  await interactive(client);
 }
 
 main();
